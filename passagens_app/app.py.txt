@@ -1,0 +1,29 @@
+from amadeus import Client
+from config import AMADEUS_API_KEY, AMADEUS_API_SECRET
+
+amadeus = Client(
+    client_id=AMADEUS_API_KEY,
+    client_secret=AMADEUS_API_SECRET
+)
+
+
+def buscar_voos(origem, destino, data):
+    response = amadeus.shopping.flight_offers_search.get(
+        originLocationCode=origem,
+        destinationLocationCode=destino,
+        departureDate=data,
+        adults=1
+    )
+
+    voos = []
+
+    for offer in response.data:
+        preco = float(offer['price']['total'])
+
+        voos.append({
+            "preco": preco,
+            "data": data,
+            "destino": destino
+        })
+
+    return voos

@@ -1,0 +1,20 @@
+import requests
+from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+
+def enviar_alerta(voo):
+    mensagem = f"""
+🚨 PROMOÇÃO DE VERDADE!
+
+✈ Manaus → {voo['destino']}
+📅 {voo['data']}
+💰 R$ {voo['preco']}
+
+🔥 Corre que pode acabar rápido!
+    """
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+
+    requests.post(url, data={
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": mensagem
+    })

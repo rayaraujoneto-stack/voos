@@ -1,0 +1,49 @@
+import sqlite3
+
+conn = sqlite3.connect("database.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS voos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    destino TEXT,
+    data TEXT,
+    preco REAL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS alertas_enviados (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    destino TEXT,
+    data TEXT,
+    preco REAL
+)
+""")
+
+conn.commit()
+
+
+def salvar_voo(destino, data, preco):
+    cursor.execute(
+        "INSERT INTO voos (destino, data, preco) VALUES (?, ?, ?)",
+        (destino, data, preco)
+    )
+    conn.commit()
+
+
+def ja_notificado(destino, data, preco):
+    cursor.execute(
+        "SELECT * FROM alertas_enviados WHERE destino=? AND data=? AND preco=?",
+        (destino, data, preco)
+    )
+    return cursor.fetchone() is not None
+
+
+def salvar_alerta(destino, data, preco):
+    cursor.execute(
+        "INSERT INTO alertas_enviados (destino, data, preco) VALUES (?, ?, ?)",
+        (destino, data, preco)
+    )
+    conn.commit()
